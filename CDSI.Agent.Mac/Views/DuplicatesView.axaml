@@ -1,0 +1,40 @@
+<UserControl
+    x:Class="CDSI.Agent.Mac.Views.DuplicatesView"
+    x:CompileBindings="False"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <Grid RowDefinitions="44,*" Background="White">
+    <Border Classes="toolbar" Padding="10,7">
+      <Grid ColumnDefinitions="*,Auto">
+        <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+          <TextBlock Text="精确重复文件" Classes="section-title" />
+          <TextBlock Text="按 SHA-256 分组，仅供检查，不会自动删除"
+                     Classes="muted" VerticalAlignment="Center" />
+        </StackPanel>
+        <TextBlock Grid.Column="1" Text="{Binding DuplicateSummaryText, FallbackValue='0 个重复组'}"
+                   Classes="muted" VerticalAlignment="Center" />
+      </Grid>
+    </Border>
+
+    <DataGrid Grid.Row="1"
+              DoubleTapped="OnDuplicateDoubleTapped"
+              ItemsSource="{Binding DuplicateAssets}"
+              SelectedItem="{Binding SelectedDuplicateAsset, Mode=TwoWay}"
+              AutoGenerateColumns="False">
+      <DataGrid.Columns>
+        <DataGridTextColumn Header="组" Binding="{Binding GroupNumber}" Width="60" />
+        <DataGridTextColumn Header="SHA-256" Binding="{Binding Sha256}" Width="260" />
+        <DataGridTextColumn Header="文件" Binding="{Binding OriginalFilename}" Width="240" />
+        <DataGridTextColumn Header="大小" Binding="{Binding SizeText}" Width="100" />
+        <DataGridTextColumn Header="位置" Binding="{Binding Path}" Width="*" MinWidth="360" />
+        <DataGridTextColumn Header="状态" Binding="{Binding StatusText}" Width="90" />
+      </DataGrid.Columns>
+      <DataGrid.ContextMenu>
+        <ContextMenu>
+          <MenuItem Header="打开文件位置" Command="{Binding OpenDuplicateLocationCommand}" />
+          <MenuItem Header="资产详情" Command="{Binding ShowDuplicateDetailsCommand}" />
+        </ContextMenu>
+      </DataGrid.ContextMenu>
+    </DataGrid>
+  </Grid>
+</UserControl>

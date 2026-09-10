@@ -1,0 +1,132 @@
+<UserControl
+    x:Class="CDSI.Agent.Mac.Views.AssetsView"
+    x:CompileBindings="False"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <Grid RowDefinitions="Auto,*,38,62" Background="White">
+    <Border Grid.Row="0" Classes="toolbar">
+      <WrapPanel Orientation="Horizontal">
+        <TextBlock Text="文件名" VerticalAlignment="Center" Margin="0,0,6,0" />
+        <TextBox x:Name="AssetSearchBox"
+                 Width="190"
+                 Watermark="输入文件名关键词"
+                 Text="{Binding AssetSearchText, Mode=TwoWay}"
+                 KeyDown="OnAssetSearchKeyDown"
+                 Margin="0,0,12,5" />
+
+        <TextBlock Text="类型" VerticalAlignment="Center" Margin="0,0,6,5" />
+        <ComboBox Width="112"
+                  ItemsSource="{Binding FileTypeOptions}"
+                  SelectedItem="{Binding SelectedFileType, Mode=TwoWay}"
+                  Margin="0,0,12,5" />
+
+        <TextBlock Text="扩展名" VerticalAlignment="Center" Margin="0,0,6,5" />
+        <ComboBox Width="112"
+                  ItemsSource="{Binding ExtensionOptions}"
+                  SelectedItem="{Binding SelectedExtension, Mode=TwoWay}"
+                  Margin="0,0,12,5" />
+
+        <TextBlock Text="标签" VerticalAlignment="Center" Margin="0,0,6,5" />
+        <ComboBox Width="132"
+                  ItemsSource="{Binding TagOptions}"
+                  SelectedItem="{Binding SelectedTag, Mode=TwoWay}"
+                  Margin="0,0,12,5" />
+
+        <TextBlock Text="创建时间" VerticalAlignment="Center" Margin="0,0,6,5" />
+        <DatePicker Width="132" SelectedDate="{Binding CreatedFrom, Mode=TwoWay}"
+                    Margin="0,0,5,5" />
+        <TextBlock Text="至" VerticalAlignment="Center" Margin="0,0,5,5" />
+        <DatePicker Width="132" SelectedDate="{Binding CreatedTo, Mode=TwoWay}"
+                    Margin="0,0,12,5" />
+
+        <Button Classes="primary" Command="{Binding SearchAssetsCommand}" Margin="0,0,6,5">
+          <StackPanel Orientation="Horizontal" Spacing="6">
+            <TextBlock Text="⌕" Foreground="White" FontSize="15" />
+            <TextBlock Text="搜索" Foreground="White" />
+          </StackPanel>
+        </Button>
+        <Button Classes="subtle" Content="重置" Command="{Binding ResetAssetFiltersCommand}"
+                Margin="0,0,10,5" />
+        <TextBlock Text="{Binding AssetResultText, FallbackValue='全部资产'}"
+                   Classes="muted" VerticalAlignment="Center" Margin="0,0,0,5" />
+      </WrapPanel>
+    </Border>
+
+    <DataGrid Grid.Row="1"
+              x:Name="AssetGrid"
+              ItemsSource="{Binding Assets}"
+              SelectedItem="{Binding SelectedAsset, Mode=TwoWay}"
+              SelectionMode="Extended"
+              AutoGenerateColumns="False">
+      <DataGrid.Columns>
+        <DataGridTextColumn Header="行号" Binding="{Binding RowNumber}" Width="62" />
+        <DataGridTextColumn Header="资产 ID" Binding="{Binding AssetIdText}" Width="118" />
+        <DataGridTextColumn Header="文件" Binding="{Binding OriginalFilename}" Width="220" />
+        <DataGridTextColumn Header="所属项目" Binding="{Binding ProjectNamesText}" Width="180" />
+        <DataGridTextColumn Header="备份状态" Binding="{Binding BackupStatusText}" Width="120" />
+        <DataGridTextColumn Header="备份时间" Binding="{Binding BackupTimeText}" Width="145" />
+        <DataGridTextColumn Header="标签" Binding="{Binding TagsText}" Width="180" />
+        <DataGridTextColumn Header="类型" Binding="{Binding TypeText}" Width="125" />
+        <DataGridTextColumn Header="大小" Binding="{Binding SizeText}" Width="90" />
+        <DataGridTextColumn Header="文件校验值（SHA256）" Binding="{Binding Sha256}" Width="420" />
+        <DataGridTextColumn Header="修改时间" Binding="{Binding ModifiedAtText}" Width="145" />
+        <DataGridTextColumn Header="索引时间" Binding="{Binding IndexedAtText}" Width="145" />
+        <DataGridTextColumn Header="位置" Binding="{Binding Path}" Width="320" />
+        <DataGridTextColumn Header="媒体信息" Binding="{Binding MediaInfoText}" Width="220" />
+        <DataGridTextColumn Header="状态" Binding="{Binding LocationStatusText}" Width="90" />
+      </DataGrid.Columns>
+      <DataGrid.ContextMenu>
+        <ContextMenu>
+          <MenuItem Header="打开文件位置" Command="{Binding OpenAssetLocationCommand}" />
+          <MenuItem Header="打开所在项目" Command="{Binding OpenAssetProjectCommand}" />
+          <MenuItem Header="资产详情" Command="{Binding ShowAssetDetailsCommand}" />
+          <Separator />
+          <MenuItem Header="标签" Command="{Binding ManageAssetTagsCommand}" />
+          <MenuItem Header="加入项目" Command="{Binding AddAssetsToProjectCommand}" />
+          <MenuItem Header="发布到 OpenWeb" Command="{Binding PublishAssetCommand}" />
+          <Separator />
+          <MenuItem Header="复制到 CDSI 工作目录" Command="{Binding CopyAssetsToWorkspaceCommand}" />
+          <MenuItem Header="移动到 CDSI 工作目录" Command="{Binding MoveAssetsToWorkspaceCommand}" />
+          <MenuItem Header="同步到云端" Command="{Binding BackupAssetsCommand}" />
+          <MenuItem Header="从云端取回" Command="{Binding RestoreAssetsCommand}" />
+          <Separator />
+          <MenuItem Header="从资产列表移除" Command="{Binding RemoveAssetsCommand}" />
+        </ContextMenu>
+      </DataGrid.ContextMenu>
+    </DataGrid>
+
+    <Border Grid.Row="2" Background="White" BorderBrush="#E2E6E9" BorderThickness="0,1,0,0"
+            Padding="8,4">
+      <Grid ColumnDefinitions="180,*,180">
+        <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+          <TextBlock Text="每页" VerticalAlignment="Center" Classes="muted" />
+          <ComboBox Width="78"
+                    ItemsSource="{Binding PageSizeOptions}"
+                    SelectedItem="{Binding SelectedPageSize, Mode=TwoWay}" />
+        </StackPanel>
+        <TextBlock Grid.Column="1"
+                   Text="{Binding AssetPageText, FallbackValue='第 1 / 1 页 · 0 条'}"
+                   Classes="muted" HorizontalAlignment="Center" VerticalAlignment="Center" />
+        <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="5">
+          <Button Classes="icon subtle" Content="‹" ToolTip.Tip="上一页"
+                  IsEnabled="{Binding CanPreviousAssetPage}"
+                  Command="{Binding PreviousAssetPageCommand}" />
+          <Button Classes="icon subtle" Content="›" ToolTip.Tip="下一页"
+                  IsEnabled="{Binding CanNextAssetPage}"
+                  Command="{Binding NextAssetPageCommand}" />
+        </StackPanel>
+      </Grid>
+    </Border>
+
+    <Border Grid.Row="3" Background="White" BorderBrush="#E2E6E9"
+            BorderThickness="0,1,0,0" Padding="10,7">
+      <Grid RowDefinitions="Auto,Auto">
+        <TextBlock Text="{Binding SelectedAssetTitle, FallbackValue='未选择资产'}"
+                   FontWeight="SemiBold" TextTrimming="CharacterEllipsis" />
+        <TextBlock Grid.Row="1"
+                   Text="{Binding SelectedAssetSummary}"
+                   Classes="muted" Margin="0,4,0,0" TextTrimming="CharacterEllipsis" />
+      </Grid>
+    </Border>
+  </Grid>
+</UserControl>

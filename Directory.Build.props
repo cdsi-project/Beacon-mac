@@ -1,0 +1,25 @@
+<Project>
+  <PropertyGroup>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>latest</LangVersion>
+    <CdsiVersionFile>$(MSBuildThisFileDirectory)VERSION</CdsiVersionFile>
+    <CdsiVersion>$([System.IO.File]::ReadAllText('$(CdsiVersionFile)').Trim())</CdsiVersion>
+    <Version>$(CdsiVersion)</Version>
+    <AssemblyVersion>$(CdsiVersion).0</AssemblyVersion>
+    <FileVersion>$(CdsiVersion).0</FileVersion>
+    <InformationalVersion>$(CdsiVersion)</InformationalVersion>
+    <Authors>CDSI Project</Authors>
+    <Company>CDSI Project</Company>
+    <Copyright>Copyright (c) 2026 CDSI Project</Copyright>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <RepositoryUrl>https://github.com/cdsi-project/beacon-mac.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+  </PropertyGroup>
+
+  <Target Name="ValidateCdsiVersion" BeforeTargets="PrepareForBuild">
+    <Error
+      Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('$(CdsiVersion)', '^[0-9]+[.][0-9]+[.][1-9][0-9]$')) != 'True'"
+      Text="VERSION must use x.x.xx format with the final component between 10 and 99." />
+  </Target>
+</Project>

@@ -1,0 +1,104 @@
+<UserControl
+    x:Class="CDSI.Agent.Mac.Views.CloudBackupsView"
+    x:CompileBindings="False"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <Grid RowDefinitions="52,*" Background="White">
+    <Border Classes="toolbar">
+      <Grid ColumnDefinitions="Auto,290,Auto,Auto,*,Auto" ColumnSpacing="8">
+        <TextBlock Text="检索" VerticalAlignment="Center" />
+        <TextBox Grid.Column="1"
+                 x:Name="CloudBackupSearchBox"
+                 Watermark="搜索文件、项目、对象键或配置"
+                 Text="{Binding CloudBackupSearchText, Mode=TwoWay}"
+                 KeyDown="OnCloudBackupSearchKeyDown" />
+        <Button Grid.Column="2" Classes="primary" Command="{Binding SearchCloudBackupsCommand}">
+          <StackPanel Orientation="Horizontal" Spacing="6">
+            <TextBlock Text="⌕" Foreground="White" FontSize="15" />
+            <TextBlock Text="搜索" Foreground="White" />
+          </StackPanel>
+        </Button>
+        <Button Grid.Column="3" Classes="subtle" Command="{Binding RefreshCloudBackupsCommand}">
+          <StackPanel Orientation="Horizontal" Spacing="6">
+            <TextBlock Text="↻" FontSize="15" />
+            <TextBlock Text="刷新" />
+          </StackPanel>
+        </Button>
+        <TextBlock Grid.Column="5"
+                   Text="{Binding CloudBackupSummaryText, FallbackValue='尚未加载云备份'}"
+                   Classes="muted" VerticalAlignment="Center" />
+      </Grid>
+    </Border>
+
+    <Grid Grid.Row="1" ColumnDefinitions="2*,8,3*">
+      <Grid Grid.Column="0" RowDefinitions="38,*">
+        <Border Background="#FAFBFC" BorderBrush="#E2E6E9" BorderThickness="0,0,0,1"
+                Padding="10,0">
+          <TextBlock Text="备份项目" Classes="section-title" VerticalAlignment="Center" />
+        </Border>
+        <DataGrid Grid.Row="1"
+                  x:Name="CloudBackupProjectGrid"
+                  ItemsSource="{Binding CloudBackupProjects}"
+                  SelectedItem="{Binding SelectedCloudBackupProject, Mode=TwoWay}"
+                  HorizontalScrollBarVisibility="Auto"
+                  AutoGenerateColumns="False">
+          <DataGrid.Columns>
+            <DataGridTextColumn Header="项目" Binding="{Binding Name}" Width="*" MinWidth="150" />
+            <DataGridTextColumn Header="云提供商" Binding="{Binding ProvidersText}" Width="135" MinWidth="135" />
+            <DataGridTextColumn Header="项目资源数" Binding="{Binding AssetCountText}" Width="90" MinWidth="90" />
+            <DataGridTextColumn Header="云端副本" Binding="{Binding BackupCountText}" Width="85" MinWidth="85" />
+            <DataGridTextColumn Header="占用空间" Binding="{Binding TotalSizeText}" Width="100" MinWidth="100" />
+            <DataGridTextColumn Header="最近备份" Binding="{Binding LatestBackupAtText}" Width="145" MinWidth="145" />
+          </DataGrid.Columns>
+          <DataGrid.ContextMenu>
+            <ContextMenu>
+              <MenuItem Header="删除备份项目" Command="{Binding DeleteCloudBackupProjectCommand}" />
+            </ContextMenu>
+          </DataGrid.ContextMenu>
+        </DataGrid>
+      </Grid>
+
+      <GridSplitter Grid.Column="1" Width="8" Background="#F1F3F5"
+                    HorizontalAlignment="Stretch" />
+
+      <Grid Grid.Column="2" RowDefinitions="38,*">
+        <Border Background="#FAFBFC" BorderBrush="#E2E6E9" BorderThickness="0,0,0,1"
+                Padding="10,0">
+          <Grid ColumnDefinitions="*,Auto">
+            <TextBlock Text="云端备份" Classes="section-title" VerticalAlignment="Center" />
+            <TextBlock Grid.Column="1"
+                       Text="{Binding SelectedCloudBackupProject.Name, FallbackValue='请选择备份项目'}"
+                       Classes="muted" VerticalAlignment="Center" />
+          </Grid>
+        </Border>
+        <DataGrid Grid.Row="1"
+                  x:Name="CloudBackupGrid"
+                  DoubleTapped="OnCloudBackupDoubleTapped"
+                  ItemsSource="{Binding CloudBackups}"
+                  SelectedItem="{Binding SelectedCloudBackup, Mode=TwoWay}"
+                  SelectionMode="Extended"
+                  HorizontalScrollBarVisibility="Auto"
+                  AutoGenerateColumns="False">
+          <DataGrid.Columns>
+            <DataGridTextColumn Header="本地资产" Binding="{Binding LocalAssetName}" Width="*" MinWidth="150" />
+            <DataGridTextColumn Header="所属项目" Binding="{Binding ProjectName}" Width="140" MinWidth="140" />
+            <DataGridTextColumn Header="云端文件名" Binding="{Binding RemoteFileName}" Width="180" MinWidth="180" />
+            <DataGridTextColumn Header="对象键" Binding="{Binding ObjectKey}" Width="280" MinWidth="280" />
+            <DataGridTextColumn Header="大小" Binding="{Binding SizeText}" Width="95" MinWidth="95" />
+            <DataGridTextColumn Header="校验状态" Binding="{Binding VerificationStatusText}" Width="95" MinWidth="95" />
+            <DataGridTextColumn Header="备份时间" Binding="{Binding BackupAtText}" Width="145" MinWidth="145" />
+          </DataGrid.Columns>
+          <DataGrid.ContextMenu>
+            <ContextMenu>
+              <MenuItem Header="打开文件位置" Command="{Binding OpenCloudBackupLocationCommand}" />
+              <Separator />
+              <MenuItem Header="取回" Command="{Binding RestoreCloudBackupCommand}" />
+              <Separator />
+              <MenuItem Header="删除备份" Command="{Binding DeleteCloudBackupCommand}" />
+            </ContextMenu>
+          </DataGrid.ContextMenu>
+        </DataGrid>
+      </Grid>
+    </Grid>
+  </Grid>
+</UserControl>

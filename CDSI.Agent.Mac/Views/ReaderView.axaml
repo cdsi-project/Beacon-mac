@@ -1,0 +1,137 @@
+<UserControl
+    x:Class="CDSI.Agent.Mac.Views.ReaderView"
+    x:CompileBindings="False"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <Grid RowDefinitions="48,*" Background="White">
+    <Border Classes="toolbar" Padding="7">
+      <Grid ColumnDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,16,Auto,210,Auto,*,Auto" ColumnSpacing="6">
+        <Button Grid.Column="0" Classes="primary" Command="{Binding AddReaderFeedCommand}">
+          <StackPanel Orientation="Horizontal" Spacing="5">
+            <TextBlock Text="＋" Foreground="White" />
+            <TextBlock Text="添加订阅" Foreground="White" />
+          </StackPanel>
+        </Button>
+        <Button Grid.Column="1" Classes="subtle" Command="{Binding RefreshReaderFeedsCommand}">
+          <StackPanel Orientation="Horizontal" Spacing="5">
+            <TextBlock Text="↻" FontSize="15" />
+            <TextBlock Text="刷新全部" />
+          </StackPanel>
+        </Button>
+        <Button Grid.Column="2" Classes="subtle" Content="导入 OPML"
+                Command="{Binding ImportReaderOpmlCommand}" />
+        <Button Grid.Column="3" Classes="subtle" Content="导出 OPML"
+                Command="{Binding ExportReaderOpmlCommand}" />
+        <Button Grid.Column="4" Classes="subtle" Content="恢复数据"
+                Command="{Binding ImportReaderDataCommand}" />
+        <Button Grid.Column="5" Classes="subtle" Content="备份数据"
+                Command="{Binding ExportReaderDataCommand}" />
+        <TextBlock Grid.Column="7" Text="检索" VerticalAlignment="Center" />
+        <TextBox Grid.Column="8" x:Name="ReaderSearchBox"
+                 Watermark="搜索标题、作者和摘要"
+                 Text="{Binding ReaderSearchText, Mode=TwoWay}"
+                 KeyDown="OnReaderSearchKeyDown" />
+        <Button Grid.Column="9" Classes="primary" Content="搜索"
+                Command="{Binding SearchReaderEntriesCommand}" />
+        <TextBlock Grid.Column="11"
+                   Text="{Binding ReaderSummaryText, FallbackValue='尚未加载'}"
+                   Classes="muted" VerticalAlignment="Center" />
+      </Grid>
+    </Border>
+
+    <Grid Grid.Row="1" ColumnDefinitions="220,8,2*,8,3*">
+      <Grid Grid.Column="0" RowDefinitions="38,*">
+        <Border Background="#FAFBFC" BorderBrush="#E2E6E9" BorderThickness="0,0,0,1"
+                Padding="10,0">
+          <TextBlock Text="信息源" Classes="section-title" VerticalAlignment="Center" />
+        </Border>
+        <TreeView Grid.Row="1"
+                  ItemsSource="{Binding ReaderNavigationItems}"
+                  SelectedItem="{Binding SelectedReaderNavigation, Mode=TwoWay}"
+                  BorderThickness="0">
+          <TreeView.Styles>
+            <Style Selector="TreeViewItem">
+              <Setter Property="IsExpanded" Value="True" />
+            </Style>
+          </TreeView.Styles>
+          <TreeView.ItemTemplate>
+            <TreeDataTemplate ItemsSource="{Binding Children}">
+              <Grid ColumnDefinitions="*,Auto" MinHeight="30" Margin="4,1">
+                <TextBlock Text="{Binding Title}" VerticalAlignment="Center"
+                           TextTrimming="CharacterEllipsis" />
+                <Border Grid.Column="1" Background="#E7F3EC" CornerRadius="3"
+                        Padding="5,1" Margin="6,0,0,0" VerticalAlignment="Center"
+                        IsVisible="{Binding HasCount}">
+                  <TextBlock Text="{Binding CountText}" Foreground="#18794E" FontSize="11" />
+                </Border>
+              </Grid>
+            </TreeDataTemplate>
+          </TreeView.ItemTemplate>
+          <TreeView.ContextMenu>
+            <ContextMenu>
+              <MenuItem Header="刷新订阅" Command="{Binding RefreshSelectedReaderFeedCommand}" />
+              <MenuItem Header="打开源站" Command="{Binding OpenReaderFeedSiteCommand}" />
+              <Separator />
+              <MenuItem Header="移除订阅" Command="{Binding RemoveReaderFeedCommand}" />
+            </ContextMenu>
+          </TreeView.ContextMenu>
+        </TreeView>
+      </Grid>
+
+      <GridSplitter Grid.Column="1" Width="8" Background="#F1F3F5"
+                    HorizontalAlignment="Stretch" />
+
+      <Grid Grid.Column="2" RowDefinitions="38,*">
+        <Border Background="#FAFBFC" BorderBrush="#E2E6E9" BorderThickness="0,0,0,1"
+                Padding="10,0">
+          <TextBlock Text="条目" Classes="section-title" VerticalAlignment="Center" />
+        </Border>
+        <DataGrid Grid.Row="1" x:Name="ReaderEntriesGrid"
+                  ItemsSource="{Binding ReaderEntries}"
+                  SelectedItem="{Binding SelectedReaderEntry, Mode=TwoWay}"
+                  AutoGenerateColumns="False"
+                  RowHeight="36"
+                  DoubleTapped="OnReaderEntryDoubleTapped">
+          <DataGrid.Columns>
+            <DataGridTextColumn Header="状态" Binding="{Binding ReadStatusText}" Width="58" />
+            <DataGridTextColumn Header="收藏" Binding="{Binding StarredText}" Width="58" />
+            <DataGridTextColumn Header="标题" Binding="{Binding Title}" Width="*" MinWidth="180" />
+            <DataGridTextColumn Header="来源" Binding="{Binding FeedTitle}" Width="140" />
+            <DataGridTextColumn Header="时间" Binding="{Binding PublishedAtText}" Width="128" />
+          </DataGrid.Columns>
+          <DataGrid.ContextMenu>
+            <ContextMenu>
+              <MenuItem Header="打开原文" Command="{Binding OpenReaderEntryCommand}" />
+              <MenuItem Header="标记为已读 / 未读" Command="{Binding ToggleReaderEntryReadCommand}" />
+              <MenuItem Header="收藏 / 取消收藏" Command="{Binding ToggleReaderEntryStarCommand}" />
+            </ContextMenu>
+          </DataGrid.ContextMenu>
+        </DataGrid>
+      </Grid>
+
+      <GridSplitter Grid.Column="3" Width="8" Background="#F1F3F5"
+                    HorizontalAlignment="Stretch" />
+
+      <Grid Grid.Column="4" RowDefinitions="38,Auto,Auto,*" Margin="0">
+        <Border Background="#FAFBFC" BorderBrush="#E2E6E9" BorderThickness="0,0,0,1"
+                Padding="10,0">
+          <Grid ColumnDefinitions="*,Auto">
+            <TextBlock Text="阅读" Classes="section-title" VerticalAlignment="Center" />
+            <Button Grid.Column="1" Classes="icon subtle" Content="↗"
+                    ToolTip.Tip="打开原文" Command="{Binding OpenReaderEntryCommand}" />
+          </Grid>
+        </Border>
+        <TextBlock Grid.Row="1" Margin="14,12,14,0"
+                   Text="{Binding SelectedReaderEntry.Title, FallbackValue='选择一篇条目'}"
+                   FontSize="17" FontWeight="SemiBold" TextWrapping="Wrap" />
+        <TextBlock Grid.Row="2" Margin="14,7,14,8"
+                   Text="{Binding SelectedReaderEntry.MetadataText}"
+                   Classes="muted" TextWrapping="Wrap" />
+        <ScrollViewer Grid.Row="3" Margin="14,4,10,12">
+          <TextBlock Text="{Binding SelectedReaderEntry.Content}"
+                     FontSize="14" LineHeight="22" TextWrapping="Wrap" />
+        </ScrollViewer>
+      </Grid>
+    </Grid>
+  </Grid>
+</UserControl>

@@ -1,0 +1,165 @@
+<UserControl
+    x:Class="CDSI.Agent.Mac.Views.StatisticsView"
+    x:CompileBindings="False"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <UserControl.Styles>
+    <Style Selector="Border.metric">
+      <Setter Property="Background" Value="White" />
+      <Setter Property="BorderBrush" Value="#DDE2E6" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="CornerRadius" Value="4" />
+      <Setter Property="Padding" Value="14,10" />
+      <Setter Property="Margin" Value="0,0,8,8" />
+    </Style>
+    <Style Selector="TextBlock.metric-value">
+      <Setter Property="Foreground" Value="#1F252B" />
+      <Setter Property="FontSize" Value="20" />
+      <Setter Property="FontWeight" Value="SemiBold" />
+    </Style>
+    <Style Selector="TextBlock.metric-label">
+      <Setter Property="Foreground" Value="#657078" />
+      <Setter Property="FontSize" Value="12" />
+    </Style>
+  </UserControl.Styles>
+
+  <ScrollViewer Background="White">
+    <StackPanel Margin="20,14,12,20" Spacing="8">
+      <TextBlock Text="资产构成" Classes="section-title" Margin="0,0,0,4" />
+      <Grid ColumnDefinitions="320,*" Margin="0,0,0,8">
+        <StackPanel Grid.Column="0" Margin="0,0,20,0" Spacing="9">
+          <Grid ColumnDefinitions="72,*,54">
+            <TextBlock Text="视频" />
+            <ProgressBar Grid.Column="1" Height="7" Margin="8,0"
+                         Maximum="{Binding Statistics.AssetCount}"
+                         Value="{Binding Statistics.VideoAssetCount}" />
+            <TextBlock Grid.Column="2" Text="{Binding Statistics.VideoAssetCount, FallbackValue='0'}"
+                       HorizontalAlignment="Right" />
+          </Grid>
+          <Grid ColumnDefinitions="72,*,54">
+            <TextBlock Text="音频" />
+            <ProgressBar Grid.Column="1" Height="7" Margin="8,0"
+                         Maximum="{Binding Statistics.AssetCount}"
+                         Value="{Binding Statistics.AudioAssetCount}" />
+            <TextBlock Grid.Column="2" Text="{Binding Statistics.AudioAssetCount, FallbackValue='0'}"
+                       HorizontalAlignment="Right" />
+          </Grid>
+          <Grid ColumnDefinitions="72,*,54">
+            <TextBlock Text="图片" />
+            <ProgressBar Grid.Column="1" Height="7" Margin="8,0"
+                         Maximum="{Binding Statistics.AssetCount}"
+                         Value="{Binding Statistics.ImageAssetCount}" />
+            <TextBlock Grid.Column="2" Text="{Binding Statistics.ImageAssetCount, FallbackValue='0'}"
+                       HorizontalAlignment="Right" />
+          </Grid>
+          <Grid ColumnDefinitions="72,*,54">
+            <TextBlock Text="文本 / 文档" />
+            <ProgressBar Grid.Column="1" Height="7" Margin="8,0"
+                         Maximum="{Binding Statistics.AssetCount}"
+                         Value="{Binding Statistics.DocumentAssetCount}" />
+            <TextBlock Grid.Column="2" Text="{Binding Statistics.DocumentAssetCount, FallbackValue='0'}"
+                       HorizontalAlignment="Right" />
+          </Grid>
+          <Grid ColumnDefinitions="72,*,54">
+            <TextBlock Text="其他" />
+            <ProgressBar Grid.Column="1" Height="7" Margin="8,0"
+                         Maximum="{Binding Statistics.AssetCount}"
+                         Value="{Binding Statistics.OtherAssetCount}" />
+            <TextBlock Grid.Column="2" Text="{Binding Statistics.OtherAssetCount, FallbackValue='0'}"
+                       HorizontalAlignment="Right" />
+          </Grid>
+        </StackPanel>
+
+        <Grid Grid.Column="1" ColumnDefinitions="*,*,*" RowDefinitions="Auto,Auto">
+          <Border Grid.Column="0" Grid.Row="0" Classes="metric">
+            <StackPanel Spacing="4">
+              <TextBlock Text="资产总数" Classes="metric-label" />
+              <TextBlock Text="{Binding Statistics.AssetCount, FallbackValue='0'}" Classes="metric-value" />
+            </StackPanel>
+          </Border>
+          <Border Grid.Column="1" Grid.Row="0" Classes="metric">
+            <StackPanel Spacing="4">
+              <TextBlock Text="视频文件" Classes="metric-label" />
+              <TextBlock Text="{Binding Statistics.VideoAssetCount, FallbackValue='0'}" Classes="metric-value" />
+            </StackPanel>
+          </Border>
+          <Border Grid.Column="2" Grid.Row="0" Classes="metric">
+            <StackPanel Spacing="4">
+              <TextBlock Text="音频文件" Classes="metric-label" />
+              <TextBlock Text="{Binding Statistics.AudioAssetCount, FallbackValue='0'}" Classes="metric-value" />
+            </StackPanel>
+          </Border>
+          <Border Grid.Column="0" Grid.Row="1" Classes="metric">
+            <StackPanel Spacing="4">
+              <TextBlock Text="图片文件" Classes="metric-label" />
+              <TextBlock Text="{Binding Statistics.ImageAssetCount, FallbackValue='0'}" Classes="metric-value" />
+            </StackPanel>
+          </Border>
+          <Border Grid.Column="1" Grid.Row="1" Classes="metric">
+            <StackPanel Spacing="4">
+              <TextBlock Text="文本 / 文档" Classes="metric-label" />
+              <TextBlock Text="{Binding Statistics.DocumentAssetCount, FallbackValue='0'}" Classes="metric-value" />
+            </StackPanel>
+          </Border>
+          <Border Grid.Column="2" Grid.Row="1" Classes="metric">
+            <StackPanel Spacing="4">
+              <TextBlock Text="其他类型" Classes="metric-label" />
+              <TextBlock Text="{Binding Statistics.OtherAssetCount, FallbackValue='0'}" Classes="metric-value" />
+            </StackPanel>
+          </Border>
+        </Grid>
+      </Grid>
+
+      <TextBlock Text="存储与保护" Classes="section-title" Margin="0,4,0,4" />
+      <Grid ColumnDefinitions="*,*,*" RowDefinitions="Auto,Auto">
+        <Border Grid.Column="0" Grid.Row="0" Classes="metric">
+          <StackPanel Spacing="4">
+            <TextBlock Text="可用本地文件" Classes="metric-label" />
+            <TextBlock Text="{Binding Statistics.AvailableLocalFileCount, FallbackValue='0'}" Classes="metric-value" />
+          </StackPanel>
+        </Border>
+        <Border Grid.Column="1" Grid.Row="0" Classes="metric">
+          <StackPanel Spacing="4">
+            <TextBlock Text="不可用资产" Classes="metric-label" />
+            <TextBlock Text="{Binding Statistics.UnavailableAssetCount, FallbackValue='0'}" Classes="metric-value" />
+          </StackPanel>
+        </Border>
+        <Border Grid.Column="2" Grid.Row="0" Classes="metric">
+          <StackPanel Spacing="4">
+            <TextBlock Text="占用存储空间" Classes="metric-label" />
+            <TextBlock Text="{Binding Statistics.TotalSizeText, FallbackValue='0 B'}" Classes="metric-value" />
+          </StackPanel>
+        </Border>
+        <Border Grid.Column="0" Grid.Row="1" Classes="metric">
+          <StackPanel Spacing="4">
+            <TextBlock Text="已备份资产" Classes="metric-label" />
+            <TextBlock Text="{Binding Statistics.BackedUpAssetCount, FallbackValue='0'}" Classes="metric-value" />
+          </StackPanel>
+        </Border>
+        <Border Grid.Column="1" Grid.Row="1" Classes="metric">
+          <StackPanel Spacing="4">
+            <TextBlock Text="未备份资产" Classes="metric-label" />
+            <TextBlock Text="{Binding Statistics.UnbackedUpAssetCount, FallbackValue='0'}" Classes="metric-value" />
+          </StackPanel>
+        </Border>
+        <Border Grid.Column="2" Grid.Row="1" Classes="metric">
+          <StackPanel Spacing="4">
+            <TextBlock Text="备份覆盖率" Classes="metric-label" />
+            <TextBlock Text="{Binding Statistics.BackupCoverageText, FallbackValue='0.0%'}" Classes="metric-value"
+                       Foreground="#18794E" />
+          </StackPanel>
+        </Border>
+      </Grid>
+
+      <TextBlock Text="媒体" Classes="section-title" Margin="0,4,0,4" />
+      <Grid ColumnDefinitions="*,*,*">
+        <Border Grid.Column="0" Classes="metric">
+          <StackPanel Spacing="4">
+            <TextBlock Text="视频总时长" Classes="metric-label" />
+            <TextBlock Text="{Binding Statistics.VideoDurationText, FallbackValue='00:00:00'}" Classes="metric-value" />
+          </StackPanel>
+        </Border>
+      </Grid>
+    </StackPanel>
+  </ScrollViewer>
+</UserControl>

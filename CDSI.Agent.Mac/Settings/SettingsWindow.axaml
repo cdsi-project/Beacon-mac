@@ -1,0 +1,244 @@
+<Window
+    x:Class="CDSI.Agent.Mac.Settings.SettingsWindow"
+    x:CompileBindings="False"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Title="CDSI Beacon 设置"
+    Width="980"
+    Height="650"
+    MinWidth="820"
+    MinHeight="540"
+    Background="#F7F8FA"
+    CanResize="True"
+    ShowInTaskbar="False"
+    WindowStartupLocation="CenterOwner">
+
+  <Window.Styles>
+    <Style Selector="TextBlock">
+      <Setter Property="Foreground" Value="#343D45" />
+      <Setter Property="FontSize" Value="13" />
+    </Style>
+    <Style Selector="TextBlock.section-title">
+      <Setter Property="FontSize" Value="15" />
+      <Setter Property="FontWeight" Value="SemiBold" />
+      <Setter Property="Foreground" Value="#1F252B" />
+    </Style>
+    <Style Selector="TextBlock.muted">
+      <Setter Property="Foreground" Value="#657078" />
+    </Style>
+    <Style Selector="TextBlock.error">
+      <Setter Property="Foreground" Value="#B42318" />
+    </Style>
+    <Style Selector="Button">
+      <Setter Property="MinHeight" Value="32" />
+      <Setter Property="MinWidth" Value="76" />
+      <Setter Property="Padding" Value="13,4" />
+    </Style>
+    <Style Selector="Button.primary">
+      <Setter Property="Background" Value="#18794E" />
+      <Setter Property="Foreground" Value="White" />
+    </Style>
+    <Style Selector="Button.subtle">
+      <Setter Property="Background" Value="#ECEFF2" />
+      <Setter Property="Foreground" Value="#1F252B" />
+    </Style>
+    <Style Selector="Button.danger">
+      <Setter Property="Foreground" Value="#B42318" />
+    </Style>
+    <Style Selector="TextBox">
+      <Setter Property="MinHeight" Value="32" />
+    </Style>
+    <Style Selector="ComboBox">
+      <Setter Property="MinHeight" Value="32" />
+    </Style>
+    <Style Selector="DataGrid">
+      <Setter Property="Background" Value="White" />
+      <Setter Property="BorderBrush" Value="#D8DDE2" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="GridLinesVisibility" Value="Horizontal" />
+      <Setter Property="HorizontalGridLinesBrush" Value="#E7EAED" />
+      <Setter Property="HeadersVisibility" Value="Column" />
+      <Setter Property="RowHeight" Value="31" />
+      <Setter Property="ColumnHeaderHeight" Value="35" />
+      <Setter Property="SelectionMode" Value="Single" />
+      <Setter Property="CanUserResizeColumns" Value="True" />
+      <Setter Property="CanUserSortColumns" Value="True" />
+      <Setter Property="IsReadOnly" Value="True" />
+    </Style>
+    <Style Selector="DataGridColumnHeader">
+      <Setter Property="Background" Value="#EFF2F4" />
+      <Setter Property="Foreground" Value="#343D45" />
+      <Setter Property="FontWeight" Value="SemiBold" />
+      <Setter Property="Padding" Value="9,0" />
+    </Style>
+    <Style Selector="DataGridCell">
+      <Setter Property="Padding" Value="8,0" />
+    </Style>
+    <Style Selector="TabItem">
+      <Setter Property="MinHeight" Value="38" />
+      <Setter Property="Padding" Value="14,7" />
+    </Style>
+  </Window.Styles>
+
+  <Grid RowDefinitions="Auto,*,Auto">
+    <Border Grid.Row="0" Background="White" BorderBrush="#E2E6E9"
+            BorderThickness="0,0,0,1" Padding="22,15">
+      <Grid ColumnDefinitions="*,Auto">
+        <StackPanel Spacing="3">
+          <TextBlock Classes="section-title" Text="设置" />
+          <TextBlock Classes="muted" Text="管理本机目录、扫描规则与外部服务连接" />
+        </StackPanel>
+        <ProgressBar Grid.Column="1" Width="130" Height="4"
+                     VerticalAlignment="Center" IsIndeterminate="True"
+                     IsVisible="{Binding IsBusy}" />
+      </Grid>
+    </Border>
+
+    <TabControl Grid.Row="1" Margin="18,12,18,10" Background="White">
+      <TabItem Header="工作目录">
+        <Grid Margin="24" RowDefinitions="Auto,Auto,Auto,*">
+          <TextBlock Grid.Row="0" Classes="section-title" Text="受管工作目录" />
+          <Grid Grid.Row="1" Margin="0,14,0,0" ColumnDefinitions="*,Auto,Auto">
+            <TextBox Grid.Column="0" Text="{Binding WorkspacePath, Mode=TwoWay}"
+                     Watermark="选择 CDSI 工作目录" />
+            <Button Grid.Column="1" Margin="8,0,0,0" Classes="subtle"
+                    Content="选择..." Command="{Binding BrowseWorkspaceCommand}" />
+            <Button Grid.Column="2" Margin="8,0,0,0" Classes="primary"
+                    Content="应用" Command="{Binding ApplyWorkspaceCommand}" />
+          </Grid>
+          <TextBlock Grid.Row="2" Margin="0,14,0,0" Classes="muted"
+                     Text="{Binding WorkspaceStatus}" TextWrapping="Wrap" />
+          <TextBlock Grid.Row="3" Margin="0,22,0,0" VerticalAlignment="Top"
+                     Classes="muted" TextWrapping="Wrap"
+                     Text="工作目录用于保存 Inbox、Assets、Exports、Cache、Temp 和 System。切换目录不会移动或删除旧目录中的文件。" />
+        </Grid>
+      </TabItem>
+
+      <TabItem Header="扫描目录">
+        <Grid Margin="16" RowDefinitions="Auto,*,Auto">
+          <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="8" Margin="0,0,0,10">
+            <Button Classes="primary" Content="添加目录" Command="{Binding AddScanRootCommand}" />
+            <Button Classes="subtle" Content="编辑设置" Command="{Binding EditScanRootCommand}" />
+            <Button Classes="subtle" Content="{Binding ToggleScanRootText}"
+                    Command="{Binding ToggleScanRootCommand}" />
+            <Button Classes="danger" Content="移除" Command="{Binding RemoveScanRootCommand}" />
+          </StackPanel>
+          <DataGrid Grid.Row="1" ItemsSource="{Binding ScanRoots}"
+                    SelectedItem="{Binding SelectedScanRoot, Mode=TwoWay}"
+                    AutoGenerateColumns="False" DoubleTapped="OnScanRootDoubleTapped">
+            <DataGrid.Columns>
+              <DataGridTextColumn Header="目录" Binding="{Binding Path}" Width="2*" MinWidth="220" />
+              <DataGridTextColumn Header="扫描策略" Binding="{Binding FileFilter}" Width="1.2*" MinWidth="150" />
+              <DataGridTextColumn Header="空闲扫描" Binding="{Binding IdleSchedule}" Width="115" />
+              <DataGridTextColumn Header="状态" Binding="{Binding Status}" Width="85" />
+              <DataGridTextColumn Header="最近扫描" Binding="{Binding LastScanned}" Width="145" />
+            </DataGrid.Columns>
+          </DataGrid>
+          <TextBlock Grid.Row="2" Margin="2,9,0,0" Classes="muted"
+                     Text="外部目录仅用于只读索引；移除目录不会删除已有资产和位置记录。" />
+        </Grid>
+      </TabItem>
+
+      <TabItem Header="对象存储">
+        <Grid Margin="16" RowDefinitions="Auto,*,Auto">
+          <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="8" Margin="0,0,0,10">
+            <Button Classes="primary" Content="添加配置" Command="{Binding AddStorageProfileCommand}" />
+            <Button Classes="subtle" Content="编辑" Command="{Binding EditStorageProfileCommand}" />
+            <Button Classes="subtle" Content="复制 Endpoint" Command="{Binding CopyStorageEndpointCommand}" />
+            <Button Classes="subtle" Content="复制 Bucket" Command="{Binding CopyStorageBucketCommand}" />
+            <Button Classes="danger" Content="删除" Command="{Binding DeleteStorageProfileCommand}" />
+          </StackPanel>
+          <DataGrid Grid.Row="1" ItemsSource="{Binding StorageProfiles}"
+                    SelectedItem="{Binding SelectedStorageProfile, Mode=TwoWay}"
+                    AutoGenerateColumns="False" DoubleTapped="OnStorageProfileDoubleTapped">
+            <DataGrid.Columns>
+              <DataGridTextColumn Header="提供商" Binding="{Binding Provider}" Width="120" />
+              <DataGridTextColumn Header="名称" Binding="{Binding DisplayName}" Width="135" />
+              <DataGridTextColumn Header="Endpoint" Binding="{Binding Endpoint}" Width="2*" MinWidth="210" />
+              <DataGridTextColumn Header="Bucket" Binding="{Binding Bucket}" Width="155" />
+              <DataGridTextColumn Header="地域" Binding="{Binding Region}" Width="115" />
+              <DataGridTextColumn Header="凭据" Binding="{Binding Credential}" Width="80" />
+            </DataGrid.Columns>
+          </DataGrid>
+          <TextBlock Grid.Row="2" Margin="2,9,0,0" Classes="muted"
+                     Text="访问密钥仅保存在 macOS 钥匙串中，不写入 CDSI 数据库。" />
+        </Grid>
+      </TabItem>
+
+      <TabItem Header="OpenWeb">
+        <Grid Margin="16" RowDefinitions="Auto,*,Auto">
+          <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="8" Margin="0,0,0,10">
+            <Button Classes="primary" Content="添加源站" Command="{Binding AddOpenWebSourceCommand}" />
+            <Button Classes="subtle" Content="编辑" Command="{Binding EditOpenWebSourceCommand}" />
+            <Button Classes="subtle" Content="打开源站" Command="{Binding OpenOpenWebSourceCommand}" />
+            <Button Classes="subtle" Content="复制域名" Command="{Binding CopyOpenWebDomainCommand}" />
+            <Button Classes="subtle" Content="设为默认" Command="{Binding SetDefaultOpenWebSourceCommand}" />
+            <Button Classes="danger" Content="删除" Command="{Binding DeleteOpenWebSourceCommand}" />
+          </StackPanel>
+          <DataGrid Grid.Row="1" ItemsSource="{Binding OpenWebSources}"
+                    SelectedItem="{Binding SelectedOpenWebSource, Mode=TwoWay}"
+                    AutoGenerateColumns="False"
+                    HorizontalScrollBarVisibility="Auto"
+                    DoubleTapped="OnOpenWebSourceDoubleTapped">
+            <DataGrid.Columns>
+              <DataGridTextColumn Header="名称" Binding="{Binding DisplayName}" Width="155" MinWidth="155" />
+              <DataGridTextColumn Header="源站域名" Binding="{Binding OriginDomain}" Width="2*" MinWidth="240" />
+              <DataGridTextColumn Header="WordPress 用户名" Binding="{Binding Username}" Width="170" MinWidth="170" />
+              <DataGridTextColumn Header="默认" Binding="{Binding Default}" Width="76" MinWidth="76" />
+              <DataGridTextColumn Header="凭据" Binding="{Binding Credential}" Width="82" MinWidth="82" />
+            </DataGrid.Columns>
+          </DataGrid>
+          <TextBlock Grid.Row="2" Margin="2,9,0,0" Classes="muted"
+                     Text="WordPress 应用程序密码按源站独立保存到 macOS 钥匙串。" />
+        </Grid>
+      </TabItem>
+
+      <TabItem Header="Git">
+        <Grid Margin="16" RowDefinitions="Auto,*,Auto">
+          <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="8" Margin="0,0,0,10">
+            <Button Classes="primary" Content="添加配置" Command="{Binding AddGitProfileCommand}" />
+            <Button Classes="subtle" Content="编辑" Command="{Binding EditGitProfileCommand}" />
+            <Button Classes="subtle" Content="打开平台" Command="{Binding OpenGitProviderCommand}" />
+            <Button Classes="subtle" Content="复制仓库地址" Command="{Binding CopyGitRepositoryUrlCommand}" />
+            <Button Classes="subtle" Content="设为默认" Command="{Binding SetDefaultGitProfileCommand}" />
+            <Button Classes="danger" Content="删除" Command="{Binding DeleteGitProfileCommand}" />
+          </StackPanel>
+          <DataGrid Grid.Row="1" ItemsSource="{Binding GitProfiles}"
+                    SelectedItem="{Binding SelectedGitProfile, Mode=TwoWay}"
+                    AutoGenerateColumns="False"
+                    HorizontalScrollBarVisibility="Auto"
+                    DoubleTapped="OnGitProfileDoubleTapped">
+            <DataGrid.Columns>
+              <DataGridTextColumn Header="名称" Binding="{Binding DisplayName}" Width="125" MinWidth="125" />
+              <DataGridTextColumn Header="平台" Binding="{Binding Provider}" Width="95" MinWidth="95" />
+              <DataGridTextColumn Header="仓库地址" Binding="{Binding RepositoryUrl}" Width="2*" MinWidth="230" />
+              <DataGridTextColumn Header="默认分支" Binding="{Binding DefaultBranch}" Width="100" MinWidth="100" />
+              <DataGridTextColumn Header="访问方式" Binding="{Binding Authentication}" Width="104" MinWidth="104" />
+              <DataGridTextColumn Header="用户名 / 公钥" Binding="{Binding Identity}" Width="130" MinWidth="130" />
+              <DataGridTextColumn Header="默认" Binding="{Binding Default}" Width="76" MinWidth="76" />
+              <DataGridTextColumn Header="凭据" Binding="{Binding Credential}" Width="82" MinWidth="82" />
+            </DataGrid.Columns>
+          </DataGrid>
+          <TextBlock Grid.Row="2" Margin="2,9,0,0" Classes="muted"
+                     Text="保存配置不会自动克隆、提交、推送或修改仓库文件。" />
+        </Grid>
+      </TabItem>
+    </TabControl>
+
+    <Border Grid.Row="2" Background="White" BorderBrush="#E2E6E9"
+            BorderThickness="0,1,0,0" Padding="18,11">
+      <Grid ColumnDefinitions="*,Auto">
+        <StackPanel VerticalAlignment="Center" Spacing="2">
+          <TextBlock Classes="muted" Text="{Binding StatusText}" />
+          <TextBlock Classes="error" Text="{Binding ErrorMessage}" TextWrapping="Wrap" />
+        </StackPanel>
+        <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8">
+          <Button Classes="subtle" Content="关闭" Command="{Binding CloseCommand}" />
+          <Button Classes="primary" Content="开始扫描"
+                  IsVisible="{Binding HasInitialScanRoots}"
+                  Command="{Binding StartInitialScanCommand}" />
+        </StackPanel>
+      </Grid>
+    </Border>
+  </Grid>
+</Window>

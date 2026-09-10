@@ -1,0 +1,58 @@
+<UserControl
+    x:Class="CDSI.Agent.Mac.Views.GitProjectsView"
+    x:CompileBindings="False"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <Grid RowDefinitions="52,*" Background="White">
+    <Border Classes="toolbar">
+      <Grid ColumnDefinitions="Auto,300,Auto,Auto,*,Auto" ColumnSpacing="8">
+        <TextBlock Text="检索" VerticalAlignment="Center" />
+        <TextBox Grid.Column="1"
+                 x:Name="GitSearchBox"
+                 Watermark="搜索项目、仓库、分支或提交"
+                 Text="{Binding GitProjectSearchText, Mode=TwoWay}"
+                 KeyDown="OnGitSearchKeyDown" />
+        <Button Grid.Column="2" Classes="primary" Command="{Binding SearchGitProjectsCommand}">
+          <StackPanel Orientation="Horizontal" Spacing="6">
+            <TextBlock Text="⌕" Foreground="White" FontSize="15" />
+            <TextBlock Text="搜索" Foreground="White" />
+          </StackPanel>
+        </Button>
+        <Button Grid.Column="3" Classes="subtle" Content="重置"
+                Command="{Binding ResetGitProjectSearchCommand}" />
+        <TextBlock Grid.Column="5"
+                   Text="{Binding GitProjectSummaryText, FallbackValue='尚未同步 Git 项目'}"
+                   Classes="muted" VerticalAlignment="Center" />
+      </Grid>
+    </Border>
+
+    <DataGrid Grid.Row="1"
+              DoubleTapped="OnGitProjectDoubleTapped"
+              ItemsSource="{Binding GitProjects}"
+              SelectedItem="{Binding SelectedGitProject, Mode=TwoWay}"
+              AutoGenerateColumns="False">
+      <DataGrid.Columns>
+        <DataGridTextColumn Header="项目" Binding="{Binding ProjectName}" Width="180" />
+        <DataGridTextColumn Header="类型" Binding="{Binding ProjectTypeText}" Width="82" />
+        <DataGridTextColumn Header="Git 仓库" Binding="{Binding ProfileName}" Width="160" />
+        <DataGridTextColumn Header="平台" Binding="{Binding ProviderText}" Width="90" />
+        <DataGridTextColumn Header="仓库地址" Binding="{Binding RepositoryUrl}" Width="*" MinWidth="240" />
+        <DataGridTextColumn Header="分支" Binding="{Binding Branch}" Width="90" />
+        <DataGridTextColumn Header="最近提交" Binding="{Binding CommitIdText}" Width="112" />
+        <DataGridTextColumn Header="资产" Binding="{Binding AssetCountText}" Width="64" />
+        <DataGridTextColumn Header="大小" Binding="{Binding SizeText}" Width="90" />
+        <DataGridTextColumn Header="本地状态" Binding="{Binding LocalStateText}" Width="120" />
+        <DataGridTextColumn Header="同步时间" Binding="{Binding SyncedAtText}" Width="145" />
+      </DataGrid.Columns>
+      <DataGrid.ContextMenu>
+        <ContextMenu>
+          <MenuItem Header="同步到 Git" Command="{Binding SyncGitProjectCommand}" />
+          <Separator />
+          <MenuItem Header="打开所在项目" Command="{Binding OpenGitProjectCommand}" />
+          <MenuItem Header="打开仓库" Command="{Binding OpenGitRepositoryCommand}" />
+          <MenuItem Header="复制仓库地址" Command="{Binding CopyGitRepositoryUrlCommand}" />
+        </ContextMenu>
+      </DataGrid.ContextMenu>
+    </DataGrid>
+  </Grid>
+</UserControl>

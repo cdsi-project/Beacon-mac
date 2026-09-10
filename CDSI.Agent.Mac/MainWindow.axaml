@@ -1,0 +1,306 @@
+<Window
+    x:Class="CDSI.Agent.Mac.MainWindow"
+    x:CompileBindings="False"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:views="using:CDSI.Agent.Mac.Views"
+    Title="CDSI Beacon"
+    Width="1280"
+    Height="820"
+    MinWidth="960"
+    MinHeight="640"
+    Background="#F7F8FA"
+    WindowStartupLocation="CenterScreen">
+
+  <NativeMenu.Menu>
+    <NativeMenu>
+      <NativeMenuItem Header="文件">
+        <NativeMenuItem.Menu>
+          <NativeMenu>
+            <NativeMenuItem Header="新建项目" Command="{Binding CreateProjectCommand}" />
+            <NativeMenuItemSeparator />
+            <NativeMenuItem Header="打开 CDSI 工作目录" Command="{Binding OpenWorkspaceCommand}" />
+            <NativeMenuItem Header="扫描目录设置..." Command="{Binding OpenSettingsCommand}" />
+            <NativeMenuItem Header="打开数据目录" Command="{Binding OpenDataDirectoryCommand}" />
+            <NativeMenuItem Header="数据保护..." Command="{Binding ShowDataProtectionCommand}" />
+            <NativeMenuItemSeparator />
+            <NativeMenuItem Header="关闭窗口" Click="OnCloseWindowClick" />
+          </NativeMenu>
+        </NativeMenuItem.Menu>
+      </NativeMenuItem>
+      <NativeMenuItem Header="扫描">
+        <NativeMenuItem.Menu>
+          <NativeMenu>
+            <NativeMenuItem Header="常规扫描" Command="{Binding StartStandardScanCommand}" />
+            <NativeMenuItem Header="完整校验扫描" Command="{Binding StartFullScanCommand}" />
+            <NativeMenuItem Header="取消当前任务" Command="{Binding CancelCurrentTaskCommand}" />
+            <NativeMenuItemSeparator />
+            <NativeMenuItem Header="刷新资产索引" Command="{Binding RefreshCommand}" />
+          </NativeMenu>
+        </NativeMenuItem.Menu>
+      </NativeMenuItem>
+      <NativeMenuItem Header="资产">
+        <NativeMenuItem.Menu>
+          <NativeMenu>
+            <NativeMenuItem Header="查找或筛选资产" Click="OnFocusAssetSearchClick" />
+            <NativeMenuItem Header="打开文件位置" Command="{Binding OpenAssetLocationCommand}" />
+            <NativeMenuItem Header="打开所在项目" Command="{Binding OpenAssetProjectCommand}" />
+            <NativeMenuItem Header="资产详情" Command="{Binding ShowAssetDetailsCommand}" />
+            <NativeMenuItem Header="标签" Command="{Binding ManageAssetTagsCommand}" />
+            <NativeMenuItem Header="加入项目" Command="{Binding AddAssetsToProjectCommand}" />
+            <NativeMenuItem Header="发布到 OpenWeb" Command="{Binding PublishAssetCommand}" />
+            <NativeMenuItemSeparator />
+            <NativeMenuItem Header="复制到 CDSI 工作目录" Command="{Binding CopyAssetsToWorkspaceCommand}" />
+            <NativeMenuItem Header="移动到 CDSI 工作目录" Command="{Binding MoveAssetsToWorkspaceCommand}" />
+            <NativeMenuItem Header="同步到云端" Command="{Binding BackupAssetsCommand}" />
+            <NativeMenuItem Header="从云端取回" Command="{Binding RestoreAssetsCommand}" />
+            <NativeMenuItemSeparator />
+            <NativeMenuItem Header="从资产列表移除" Command="{Binding RemoveAssetsCommand}" />
+          </NativeMenu>
+        </NativeMenuItem.Menu>
+      </NativeMenuItem>
+      <NativeMenuItem Header="视图">
+        <NativeMenuItem.Menu>
+          <NativeMenu>
+            <NativeMenuItem Header="全部资产" CommandParameter="0" Click="OnSelectTabClick" />
+            <NativeMenuItem Header="资产目录" CommandParameter="1" Click="OnSelectTabClick" />
+            <NativeMenuItem Header="重复文件" CommandParameter="2" Click="OnSelectTabClick" />
+            <NativeMenuItem Header="项目管理" CommandParameter="3" Click="OnSelectTabClick" />
+            <NativeMenuItem Header="云备份管理" CommandParameter="4" Click="OnSelectTabClick" />
+            <NativeMenuItem Header="Git 项目管理" CommandParameter="5" Click="OnSelectTabClick" />
+            <NativeMenuItem Header="RSS 订阅" CommandParameter="6" Click="OnSelectTabClick" />
+            <NativeMenuItem Header="统计" CommandParameter="7" Click="OnSelectTabClick" />
+          </NativeMenu>
+        </NativeMenuItem.Menu>
+      </NativeMenuItem>
+      <NativeMenuItem Header="工具">
+        <NativeMenuItem.Menu>
+          <NativeMenu>
+            <NativeMenuItem Header="任务中心" Command="{Binding ShowTaskCenterCommand}" />
+            <NativeMenuItem Header="运行日志" Command="{Binding ShowRuntimeLogCommand}" />
+            <NativeMenuItemSeparator />
+            <NativeMenuItem Header="数据保护..." Command="{Binding ShowDataProtectionCommand}" />
+          </NativeMenu>
+        </NativeMenuItem.Menu>
+      </NativeMenuItem>
+      <NativeMenuItem Header="设置" Command="{Binding OpenSettingsCommand}" />
+      <NativeMenuItem Header="帮助">
+        <NativeMenuItem.Menu>
+          <NativeMenu>
+            <NativeMenuItem Header="使用文档" Command="{Binding OpenDocumentationCommand}" />
+            <NativeMenuItem Header="数据安全与隐私" Command="{Binding ShowPrivacyCommand}" />
+            <NativeMenuItem Header="开源协议" Command="{Binding ShowLicenseCommand}" />
+            <NativeMenuItem Header="第三方许可" Command="{Binding ShowThirdPartyNoticesCommand}" />
+            <NativeMenuItemSeparator />
+            <NativeMenuItem Header="检查更新" Command="{Binding CheckForUpdatesCommand}" />
+            <NativeMenuItem Header="关于 CDSI Beacon" Command="{Binding ShowAboutCommand}" />
+          </NativeMenu>
+        </NativeMenuItem.Menu>
+      </NativeMenuItem>
+    </NativeMenu>
+  </NativeMenu.Menu>
+
+  <Window.Styles>
+    <Style Selector="TextBlock">
+      <Setter Property="Foreground" Value="#343D45" />
+      <Setter Property="FontSize" Value="13" />
+    </Style>
+    <Style Selector="Button">
+      <Setter Property="MinHeight" Value="30" />
+      <Setter Property="Padding" Value="12,4" />
+      <Setter Property="HorizontalContentAlignment" Value="Center" />
+    </Style>
+    <Style Selector="Button.primary">
+      <Setter Property="Background" Value="#18794E" />
+      <Setter Property="Foreground" Value="White" />
+    </Style>
+    <Style Selector="Button.subtle">
+      <Setter Property="Background" Value="#ECEFF2" />
+      <Setter Property="Foreground" Value="#1F252B" />
+    </Style>
+    <Style Selector="Button.icon">
+      <Setter Property="Width" Value="32" />
+      <Setter Property="MinWidth" Value="32" />
+      <Setter Property="Padding" Value="0" />
+      <Setter Property="FontSize" Value="15" />
+    </Style>
+    <Style Selector="TextBox">
+      <Setter Property="MinHeight" Value="30" />
+    </Style>
+    <Style Selector="ComboBox">
+      <Setter Property="MinHeight" Value="30" />
+    </Style>
+    <Style Selector="DatePicker">
+      <Setter Property="MinHeight" Value="30" />
+    </Style>
+    <Style Selector="DataGrid">
+      <Setter Property="Background" Value="White" />
+      <Setter Property="BorderBrush" Value="#D8DDE2" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="GridLinesVisibility" Value="Horizontal" />
+      <Setter Property="HorizontalGridLinesBrush" Value="#E7EAED" />
+      <Setter Property="HeadersVisibility" Value="Column" />
+      <Setter Property="RowHeight" Value="30" />
+      <Setter Property="ColumnHeaderHeight" Value="34" />
+      <Setter Property="SelectionMode" Value="Single" />
+      <Setter Property="CanUserResizeColumns" Value="True" />
+      <Setter Property="CanUserSortColumns" Value="True" />
+      <Setter Property="IsReadOnly" Value="True" />
+    </Style>
+    <Style Selector="DataGridColumnHeader">
+      <Setter Property="Background" Value="#EFF2F4" />
+      <Setter Property="Foreground" Value="#343D45" />
+      <Setter Property="FontWeight" Value="SemiBold" />
+      <Setter Property="Padding" Value="9,0" />
+    </Style>
+    <Style Selector="DataGridCell">
+      <Setter Property="Padding" Value="8,0" />
+    </Style>
+    <Style Selector="TabItem">
+      <Setter Property="MinHeight" Value="36" />
+      <Setter Property="Padding" Value="12,6" />
+    </Style>
+    <Style Selector="Border.toolbar">
+      <Setter Property="Background" Value="#F7F8FA" />
+      <Setter Property="BorderBrush" Value="#E2E6E9" />
+      <Setter Property="BorderThickness" Value="0,0,0,1" />
+      <Setter Property="Padding" Value="8" />
+    </Style>
+    <Style Selector="TextBlock.muted">
+      <Setter Property="Foreground" Value="#657078" />
+    </Style>
+    <Style Selector="TextBlock.section-title">
+      <Setter Property="Foreground" Value="#1F252B" />
+      <Setter Property="FontSize" Value="14" />
+      <Setter Property="FontWeight" Value="SemiBold" />
+    </Style>
+  </Window.Styles>
+
+  <Grid RowDefinitions="Auto,*,Auto,Auto">
+    <Border Grid.Row="0" Background="#1F252B" Padding="28,12">
+      <Grid ColumnDefinitions="Auto,*,Auto" RowDefinitions="Auto,Auto">
+        <Border Grid.RowSpan="2" Width="5" Height="38" Margin="0,0,14,0"
+                Background="#39A66E" CornerRadius="2" />
+        <TextBlock Grid.Column="1" Text="CDSI Beacon" Foreground="White"
+                   FontSize="22" FontWeight="SemiBold" />
+        <TextBlock Grid.Row="1" Grid.Column="1" Text="本地资产索引"
+                   Foreground="#B3BEC7" FontSize="12" />
+        <Border Grid.Column="2" Grid.RowSpan="2" VerticalAlignment="Center"
+                Background="#2B333A" BorderBrush="#46515A" BorderThickness="1"
+                CornerRadius="4" Padding="9,4">
+          <TextBlock Text="{Binding ApplicationVersion, StringFormat='v{0}', FallbackValue='v0.2'}"
+                     Foreground="#C8D0D6" FontSize="12" FontWeight="SemiBold" />
+        </Border>
+      </Grid>
+    </Border>
+
+    <TabControl x:Name="MainTabs"
+                Grid.Row="1"
+                Margin="24,8,24,8"
+                Background="White"
+                SelectedIndex="{Binding SelectedTabIndex, Mode=TwoWay}">
+      <TabItem>
+        <TabItem.Header>
+          <StackPanel Orientation="Horizontal" Spacing="7">
+            <TextBlock Text="▦" FontSize="15" />
+            <TextBlock Text="资产" />
+          </StackPanel>
+        </TabItem.Header>
+        <views:AssetsView x:Name="AssetsPage" />
+      </TabItem>
+      <TabItem>
+        <TabItem.Header>
+          <StackPanel Orientation="Horizontal" Spacing="7">
+            <TextBlock Text="⌂" FontSize="15" />
+            <TextBlock Text="目录" />
+          </StackPanel>
+        </TabItem.Header>
+        <views:DirectoriesView x:Name="DirectoriesPage" />
+      </TabItem>
+      <TabItem>
+        <TabItem.Header>
+          <StackPanel Orientation="Horizontal" Spacing="7">
+            <TextBlock Text="⧉" FontSize="15" />
+            <TextBlock Text="重复" />
+          </StackPanel>
+        </TabItem.Header>
+        <views:DuplicatesView x:Name="DuplicatesPage" />
+      </TabItem>
+      <TabItem>
+        <TabItem.Header>
+          <StackPanel Orientation="Horizontal" Spacing="7">
+            <TextBlock Text="◆" FontSize="13" />
+            <TextBlock Text="项目" />
+          </StackPanel>
+        </TabItem.Header>
+        <views:ProjectsView x:Name="ProjectsPage" />
+      </TabItem>
+      <TabItem>
+        <TabItem.Header>
+          <StackPanel Orientation="Horizontal" Spacing="7">
+            <TextBlock Text="☁" FontSize="15" />
+            <TextBlock Text="云备份" />
+          </StackPanel>
+        </TabItem.Header>
+        <views:CloudBackupsView x:Name="CloudBackupsPage" />
+      </TabItem>
+      <TabItem>
+        <TabItem.Header>
+          <StackPanel Orientation="Horizontal" Spacing="7">
+            <TextBlock Text="⌘" FontSize="15" />
+            <TextBlock Text="Git项目" />
+          </StackPanel>
+        </TabItem.Header>
+        <views:GitProjectsView x:Name="GitProjectsPage" />
+      </TabItem>
+      <TabItem>
+        <TabItem.Header>
+          <StackPanel Orientation="Horizontal" Spacing="7">
+            <TextBlock Text="◉" FontSize="15" />
+            <TextBlock Text="RSS" />
+          </StackPanel>
+        </TabItem.Header>
+        <views:ReaderView x:Name="ReaderPage" />
+      </TabItem>
+      <TabItem>
+        <TabItem.Header>
+          <StackPanel Orientation="Horizontal" Spacing="7">
+            <TextBlock Text="▥" FontSize="15" />
+            <TextBlock Text="统计" />
+          </StackPanel>
+        </TabItem.Header>
+        <views:StatisticsView x:Name="StatisticsPage" />
+      </TabItem>
+    </TabControl>
+
+    <Border Grid.Row="2"
+            IsVisible="{Binding IsProgressVisible}"
+            Background="#F7F8FA"
+            BorderBrush="#E2E6E9"
+            BorderThickness="0,1,0,0"
+            Padding="28,7">
+      <Grid ColumnDefinitions="250,*" RowDefinitions="Auto,Auto">
+        <TextBlock Grid.ColumnSpan="2" Text="{Binding ProgressText, FallbackValue='就绪'}"
+                   FontWeight="SemiBold" />
+        <ProgressBar Grid.Row="1" Width="230" Height="5" Margin="0,7,20,0"
+                     HorizontalAlignment="Left"
+                     Minimum="0" Maximum="100"
+                     Value="{Binding ProgressValue}"
+                     IsIndeterminate="{Binding IsProgressIndeterminate}" />
+        <TextBlock Grid.Row="1" Grid.Column="1" Margin="0,2,0,0"
+                   Text="{Binding CurrentPath, FallbackValue='尚未扫描'}"
+                   TextTrimming="CharacterEllipsis" Classes="muted" />
+      </Grid>
+    </Border>
+
+    <Border Grid.Row="3" Background="White" BorderBrush="#D8DDE2"
+            BorderThickness="0,1,0,0" Padding="20,7">
+      <Grid ColumnDefinitions="*,Auto">
+        <TextBlock Text="{Binding StatusText, FallbackValue='正在初始化'}" />
+        <TextBlock Grid.Column="1" Margin="24,0,0,0"
+                   Text="{Binding DataDirectoryText, FallbackValue='数据目录：尚未配置'}"
+                   Classes="muted" TextTrimming="CharacterEllipsis" />
+      </Grid>
+    </Border>
+  </Grid>
+</Window>

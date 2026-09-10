@@ -1,0 +1,111 @@
+<UserControl
+    x:Class="CDSI.Agent.Mac.Views.ProjectsView"
+    x:CompileBindings="False"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <Grid RowDefinitions="52,*" Background="White">
+    <Border Classes="toolbar">
+      <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+        <Button Classes="primary" Command="{Binding CreateProjectCommand}">
+          <StackPanel Orientation="Horizontal" Spacing="6">
+            <TextBlock Text="＋" Foreground="White" FontSize="15" />
+            <TextBlock Text="新建项目" Foreground="White" />
+          </StackPanel>
+        </Button>
+        <Button Classes="subtle" Command="{Binding SyncProjectCommand}">
+          <StackPanel Orientation="Horizontal" Spacing="6">
+            <TextBlock Text="☁" FontSize="15" />
+            <TextBlock Text="同步到云端" />
+          </StackPanel>
+        </Button>
+        <Button Classes="subtle" Command="{Binding SyncProjectToGitCommand}">
+          <StackPanel Orientation="Horizontal" Spacing="6">
+            <TextBlock Text="⌘" FontSize="15" />
+            <TextBlock Text="同步到 Git" />
+          </StackPanel>
+        </Button>
+        <TextBlock Text="{Binding ProjectSummaryText}" Classes="muted"
+                   VerticalAlignment="Center" Margin="4,0,0,0" />
+      </StackPanel>
+    </Border>
+
+    <Grid Grid.Row="1" ColumnDefinitions="2*,8,3*">
+      <Grid Grid.Column="0" RowDefinitions="38,*">
+        <Border Background="#FAFBFC" BorderBrush="#E2E6E9" BorderThickness="0,0,0,1"
+                Padding="10,0">
+          <Grid ColumnDefinitions="*,Auto">
+            <TextBlock Text="项目" Classes="section-title" VerticalAlignment="Center" />
+            <TextBlock Grid.Column="1" Text="{Binding Projects.Count, StringFormat='{}{0} 个'}"
+                       Classes="muted" VerticalAlignment="Center" />
+          </Grid>
+        </Border>
+        <DataGrid Grid.Row="1"
+                  x:Name="ProjectGrid"
+                  DoubleTapped="OnProjectDoubleTapped"
+                  ItemsSource="{Binding Projects}"
+                  SelectedItem="{Binding SelectedProject, Mode=TwoWay}"
+                  SelectionMode="Extended"
+                  HorizontalScrollBarVisibility="Auto"
+                  AutoGenerateColumns="False">
+          <DataGrid.Columns>
+            <DataGridTextColumn Header="名称" Binding="{Binding Name}" Width="*" MinWidth="140" />
+            <DataGridTextColumn Header="类型" Binding="{Binding TypeText}" Width="90" MinWidth="90" />
+            <DataGridTextColumn Header="云端备份" Binding="{Binding CloudBackupText}" Width="150" MinWidth="150" />
+            <DataGridTextColumn Header="创建时间" Binding="{Binding CreatedAtText}" Width="145" MinWidth="145" />
+            <DataGridTextColumn Header="资产" Binding="{Binding AssetCountText}" Width="65" MinWidth="65" />
+            <DataGridTextColumn Header="大小" Binding="{Binding SizeText}" Width="90" MinWidth="90" />
+            <DataGridTextColumn Header="已备份" Binding="{Binding BackedUpCountText}" Width="88" MinWidth="88" />
+          </DataGrid.Columns>
+          <DataGrid.ContextMenu>
+            <ContextMenu>
+              <MenuItem Header="编辑项目" Command="{Binding EditProjectCommand}" />
+              <MenuItem Header="同步到云端" Command="{Binding SyncProjectCommand}" />
+              <MenuItem Header="同步到 Git" Command="{Binding SyncProjectToGitCommand}" />
+              <Separator />
+              <MenuItem Header="删除项目" Command="{Binding DeleteProjectCommand}" />
+            </ContextMenu>
+          </DataGrid.ContextMenu>
+        </DataGrid>
+      </Grid>
+
+      <GridSplitter Grid.Column="1" Width="8" Background="#F1F3F5"
+                    HorizontalAlignment="Stretch" />
+
+      <Grid Grid.Column="2" RowDefinitions="38,*">
+        <Border Background="#FAFBFC" BorderBrush="#E2E6E9" BorderThickness="0,0,0,1"
+                Padding="10,0">
+          <Grid ColumnDefinitions="*,Auto">
+            <TextBlock Text="项目资产" Classes="section-title" VerticalAlignment="Center" />
+            <TextBlock Grid.Column="1" Text="{Binding SelectedProject.Name, FallbackValue='未选择项目'}"
+                       Classes="muted" VerticalAlignment="Center" />
+          </Grid>
+        </Border>
+        <DataGrid Grid.Row="1"
+                  x:Name="ProjectAssetGrid"
+                  DoubleTapped="OnProjectAssetDoubleTapped"
+                  ItemsSource="{Binding ProjectAssets}"
+                  SelectedItem="{Binding SelectedProjectAsset, Mode=TwoWay}"
+                  SelectionMode="Extended"
+                  HorizontalScrollBarVisibility="Auto"
+                  AutoGenerateColumns="False">
+          <DataGrid.Columns>
+            <DataGridTextColumn Header="资源 ID" Binding="{Binding AssetIdText}" Width="118" MinWidth="118" />
+            <DataGridTextColumn Header="文件" Binding="{Binding OriginalFilename}" Width="*" MinWidth="180" />
+            <DataGridTextColumn Header="类型" Binding="{Binding TypeText}" Width="105" MinWidth="105" />
+            <DataGridTextColumn Header="大小" Binding="{Binding SizeText}" Width="90" MinWidth="90" />
+            <DataGridTextColumn Header="加入时间" Binding="{Binding AddedAtText}" Width="145" MinWidth="145" />
+            <DataGridTextColumn Header="位置" Binding="{Binding Path}" Width="280" MinWidth="280" />
+            <DataGridTextColumn Header="备份状态" Binding="{Binding BackupStatusText}" Width="120" MinWidth="120" />
+          </DataGrid.Columns>
+          <DataGrid.ContextMenu>
+            <ContextMenu>
+              <MenuItem Header="打开文件位置" Command="{Binding OpenProjectAssetLocationCommand}" />
+              <Separator />
+              <MenuItem Header="移出项目" Command="{Binding RemoveProjectAssetsCommand}" />
+            </ContextMenu>
+          </DataGrid.ContextMenu>
+        </DataGrid>
+      </Grid>
+    </Grid>
+  </Grid>
+</UserControl>

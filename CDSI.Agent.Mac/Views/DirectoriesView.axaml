@@ -1,0 +1,42 @@
+<UserControl
+    x:Class="CDSI.Agent.Mac.Views.DirectoriesView"
+    x:CompileBindings="False"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <Grid RowDefinitions="52,*" Background="White">
+    <Border Classes="toolbar">
+      <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+        <Button Classes="primary" Command="{Binding OpenAssetDirectoryCommand}">
+          <StackPanel Orientation="Horizontal" Spacing="6">
+            <TextBlock Text="⌂" Foreground="White" FontSize="15" />
+            <TextBlock Text="打开目录位置" Foreground="White" />
+          </StackPanel>
+        </Button>
+        <TextBlock Text="{Binding AssetDirectorySummaryText, FallbackValue='0 个资产目录'}"
+                   Classes="muted" VerticalAlignment="Center" />
+      </StackPanel>
+    </Border>
+
+    <DataGrid Grid.Row="1"
+              DoubleTapped="OnDirectoryDoubleTapped"
+              ItemsSource="{Binding AssetDirectories}"
+              SelectedItem="{Binding SelectedAssetDirectory, Mode=TwoWay}"
+              AutoGenerateColumns="False">
+      <DataGrid.Columns>
+        <DataGridTextColumn Header="目录" Binding="{Binding Path}" Width="*" MinWidth="300" />
+        <DataGridTextColumn Header="资产" Binding="{Binding AssetCountText}" Width="90" />
+        <DataGridTextColumn Header="可用" Binding="{Binding AvailableAssetCountText}" Width="90" />
+        <DataGridTextColumn Header="不可用" Binding="{Binding MissingAssetCountText}" Width="90" />
+        <DataGridTextColumn Header="可用空间" Binding="{Binding AvailableSizeText}" Width="110" />
+        <DataGridTextColumn Header="最近修改" Binding="{Binding LatestModifiedAtText}" Width="160" />
+      </DataGrid.Columns>
+      <DataGrid.ContextMenu>
+        <ContextMenu>
+          <MenuItem Header="打开目录位置" Command="{Binding OpenAssetDirectoryCommand}" />
+          <Separator />
+          <MenuItem Header="从扫描目录中移除" Command="{Binding RemoveAssetDirectoryCommand}" />
+        </ContextMenu>
+      </DataGrid.ContextMenu>
+    </DataGrid>
+  </Grid>
+</UserControl>

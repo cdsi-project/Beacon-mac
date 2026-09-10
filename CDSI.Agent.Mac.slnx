@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="CDSI.Agent.Mac/CDSI.Agent.Mac.csproj" />
+  <Project Path="tests/CDSI.Agent.Mac.Tests/CDSI.Agent.Mac.Tests.csproj" />
+  <Project Path="tests/CDSI.Agent.Core.Tests/CDSI.Agent.Core.Tests.csproj" />
+  <Project Path="tests/CDSI.Agent.Infrastructure.Tests/CDSI.Agent.Infrastructure.Tests.csproj" />
+  <Project Path="tests/CDSI.Agent.IntegrationTests/CDSI.Agent.IntegrationTests.csproj" />
+</Solution>
