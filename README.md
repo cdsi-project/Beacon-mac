@@ -33,6 +33,8 @@ make build
 make run
 ```
 
+应用设置可通过顶部菜单“设置 > 设置...”打开，也可以使用 `Command+,` 快捷键。
+
 如需指定 `dotnet`，使用 `DOTNET_BIN`：
 
 ```bash

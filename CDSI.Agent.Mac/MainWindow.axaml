@@ -20,7 +20,6 @@
             <NativeMenuItem Header="新建项目" Command="{Binding CreateProjectCommand}" />
             <NativeMenuItemSeparator />
             <NativeMenuItem Header="打开 CDSI 工作目录" Command="{Binding OpenWorkspaceCommand}" />
-            <NativeMenuItem Header="扫描目录设置..." Command="{Binding OpenSettingsCommand}" />
             <NativeMenuItem Header="打开数据目录" Command="{Binding OpenDataDirectoryCommand}" />
             <NativeMenuItem Header="数据保护..." Command="{Binding ShowDataProtectionCommand}" />
             <NativeMenuItemSeparator />
@@ -83,7 +82,16 @@
           </NativeMenu>
         </NativeMenuItem.Menu>
       </NativeMenuItem>
-      <NativeMenuItem Header="设置" Command="{Binding OpenSettingsCommand}" />
+      <NativeMenuItem Header="设置">
+        <NativeMenuItem.Menu>
+          <NativeMenu>
+            <NativeMenuItem
+                Header="设置..."
+                Command="{Binding OpenSettingsCommand}"
+                Gesture="Meta+," />
+          </NativeMenu>
+        </NativeMenuItem.Menu>
+      </NativeMenuItem>
       <NativeMenuItem Header="帮助">
         <NativeMenuItem.Menu>
           <NativeMenu>
