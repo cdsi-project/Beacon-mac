@@ -2,7 +2,7 @@
 
 这是 CDSI Beacon 的 macOS 桌面程序。界面使用 Avalonia，领域、应用和基础设施逻辑位于同一仓库的 `CDSI.Agent.Core`、`CDSI.Agent.Application` 与 `CDSI.Agent.Infrastructure`；`CDSI.Agent.Mac` 提供 macOS 生命周期、Finder、卷标识、钥匙串、单实例和 `.app` 打包集成。
 
-应用当前支持 Apple Silicon 和 Intel Mac，最低系统版本为 macOS 12。应用版本以仓库根目录的 `VERSION` 为唯一来源。
+构建脚本以 Apple Silicon 和 Intel Mac 为目标，最低系统版本为 macOS 12；正式发布前仍需在对应架构的真实 Mac 上完成验证。应用版本以仓库根目录的 `VERSION` 为唯一来源。
 
 ## 开发依赖
 
@@ -17,7 +17,7 @@
 
 ## 构建与运行
 
-以下命令均在 `mac` 目录执行：
+以下命令均在仓库根目录执行：
 
 ```bash
 dotnet restore CDSI.Agent.Mac.slnx
@@ -163,3 +163,7 @@ CDSI Beacon 当前不是 App Sandbox 应用。它仍受 macOS 隐私控制约束
 - SSH 同步依赖用户自己的 `~/.ssh` 密钥和远端主机信任配置。未发现密钥时，只有用户明确确认后，Beacon 才会在 Terminal 中打开系统 `ssh-keygen`，并选择未占用的 Beacon 专用文件名；应用不会覆盖、读取、复制或上传私钥。
 
 如果应用无法读取某个目录，先在 Finder 中确认当前用户拥有访问权，再检查“系统设置 > 隐私与安全性 > 文件与文件夹”中的 CDSI Beacon 权限。不要通过放宽整个磁盘权限来掩盖文件自身的所有权或 ACL 问题。
+
+## 仓库
+
+GitHub：[github.com/cdsi-project/beacon-mac](https://github.com/cdsi-project/beacon-mac)
