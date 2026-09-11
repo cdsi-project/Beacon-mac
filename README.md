@@ -2,18 +2,18 @@
 
 这是 CDSI Beacon 的 macOS 桌面程序。界面使用 Avalonia，领域、应用和基础设施逻辑位于同一仓库的 `CDSI.Agent.Core`、`CDSI.Agent.Application` 与 `CDSI.Agent.Infrastructure`；`CDSI.Agent.Mac` 提供 macOS 生命周期、Finder、卷标识、钥匙串、单实例和 `.app` 打包集成。
 
-构建脚本以 Apple Silicon 和 Intel Mac 为目标，最低系统版本为 macOS 12；正式发布前仍需在对应架构的真实 Mac 上完成验证。应用版本以仓库根目录的 `VERSION` 为唯一来源。
+发布产物仅支持 Apple Silicon（arm64），最低系统版本为 macOS 12；Intel Mac 不在运行支持范围内。正式发布前仍需在真实 Apple Silicon Mac 上完成验证。应用版本以仓库根目录的 `VERSION` 为唯一来源。
 
 ## 开发依赖
 
-- macOS 12 或更高版本。
+- macOS 12 或更高版本；运行和发布验证需要 Apple Silicon Mac。
 - .NET 10 SDK。仓库的 `global.json` 请求 10.0.400 Feature Band，并允许使用该 Feature Band 的最新补丁版本。
 - 首次 `restore` 时需要访问 NuGet 源。
 - Git 项目同步和完整测试集需要系统 `git`。未安装时可运行 `xcode-select --install` 安装 Apple Command Line Tools。
 - `codesign` 是可选的打包依赖。存在时打包脚本会进行 ad-hoc 签名；正式分发仍需 Developer ID 签名和 Apple 公证。
 - 重新生成应用图标需要完整 Xcode，以便通过 `xcrun actool` 编译 Asset Catalog；日常构建只校验已提交的图标产物。
 
-发布后的 `.app` 是 self-contained 应用，目标电脑不需要另行安装 .NET Runtime。当前脚本每次只生成一种架构，不会生成 Universal Binary。
+发布后的 `.app` 是 self-contained arm64 应用，目标电脑不需要另行安装 .NET Runtime。不提供 Intel/x86_64 或 Universal Binary。
 
 ## 构建与运行
 
@@ -67,27 +67,25 @@ dotnet test tests/CDSI.Agent.IntegrationTests/CDSI.Agent.IntegrationTests.csproj
 
 ## 打包应用
 
-在当前 Mac 架构下生成应用包：
+生成 Apple Silicon 应用包：
 
 ```bash
 make app
 ```
 
-指定目标架构：
+显式指定目标架构时仅接受 `arm64`：
 
 ```bash
 make app BEACON_ARCH=arm64
-make app BEACON_ARCH=x86_64
 ```
 
-产物按运行时架构隔离，避免先后构建两个架构时互相覆盖：
+传入 `x86_64` 或其他架构会在发布前失败。产物位于：
 
 ```text
 build/osx-arm64/CDSI Beacon.app
-build/osx-x64/CDSI Beacon.app
 ```
 
-以 Apple Silicon 产物为例，本地检查可执行：
+本地检查可执行：
 
 ```bash
 open "build/osx-arm64/CDSI Beacon.app"
@@ -95,7 +93,7 @@ codesign --verify --deep --strict --verbose=2 "build/osx-arm64/CDSI Beacon.app"
 plutil -lint "build/osx-arm64/CDSI Beacon.app/Contents/Info.plist"
 ```
 
-`scripts/build-app.sh` 会先清理当前架构的旧发布目录，再生成 self-contained、single-file 发布，复制完整 Retina 图标和法律文件，并校验属性列表、可执行文件架构及 ad-hoc 签名。该签名只适合本地开发和验证，不替代 Developer ID 签名、hardened runtime、公证、staple 或安装包。
+`scripts/build-app.sh` 会先清理 arm64 旧发布目录，再生成 self-contained、single-file 发布，复制完整 Retina 图标和法律文件，并校验属性列表、可执行文件架构及 ad-hoc 签名。该签名只适合本地开发和验证，不替代 Developer ID 签名、hardened runtime、公证、staple 或安装包。
 
 ### 图标资源
 

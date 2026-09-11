@@ -5,22 +5,15 @@ script_dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 project_dir=$(CDPATH= cd -- "$script_dir/.." && pwd)
 dotnet_bin=${DOTNET_BIN:-dotnet}
 configuration=${CONFIGURATION:-Release}
-machine_arch=${BEACON_ARCH:-$(uname -m)}
+target_arch=${BEACON_ARCH:-arm64}
 
-case "$machine_arch" in
-  arm64)
-    runtime_id=osx-arm64
-    expected_arch=arm64
-    ;;
-  x86_64)
-    runtime_id=osx-x64
-    expected_arch=x86_64
-    ;;
-  *)
-    echo "Unsupported macOS architecture: $machine_arch" >&2
-    exit 1
-    ;;
-esac
+if [ "$target_arch" != arm64 ]; then
+  echo "Unsupported target architecture: $target_arch. CDSI Beacon supports Apple Silicon (arm64) only." >&2
+  exit 1
+fi
+
+runtime_id=osx-arm64
+expected_arch=arm64
 
 version=$(tr -d '[:space:]' < "$project_dir/VERSION")
 output_root="$project_dir/build"
@@ -58,7 +51,11 @@ sed "s/@VERSION@/$version/g" \
 printf 'APPL????' > "$contents_dir/PkgInfo"
 chmod 0755 "$contents_dir/MacOS/CDSI-Beacon"
 plutil -lint "$contents_dir/Info.plist"
-lipo "$contents_dir/MacOS/CDSI-Beacon" -verify_arch "$expected_arch"
+actual_arch=$(lipo -archs "$contents_dir/MacOS/CDSI-Beacon")
+if [ "$actual_arch" != "$expected_arch" ]; then
+  echo "Unexpected application architecture: $actual_arch (expected $expected_arch)." >&2
+  exit 1
+fi
 
 if command -v codesign >/dev/null 2>&1; then
   codesign --force --deep --sign - "$app_dir"

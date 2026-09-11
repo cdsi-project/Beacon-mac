@@ -19,7 +19,7 @@ respective authors and contributors.
 | SQLitePCLRaw packages | 2.1.12 | Apache-2.0 | <https://github.com/ericsink/SQLitePCL.raw> |
 | SkiaSharp and native assets | 2.88.9 | MIT and component licenses | <https://github.com/mono/SkiaSharp> |
 | TagLibSharp | 2.3.0 | LGPL-2.1-only | <https://github.com/mono/taglib-sharp> |
-| Tmds.DBus.Protocol | 0.21.2 | MIT | <https://github.com/tmds/Tmds.DBus> |
+| Tmds.DBus.Protocol | 0.21.3 | MIT | <https://github.com/tmds/Tmds.DBus> |
 | YamlDotNet | 18.1.0 | MIT | <https://github.com/aaubry/YamlDotNet> |
 
 TagLibSharp is licensed separately under LGPL-2.1-only. The distribution
@@ -32,5 +32,5 @@ third-party notices. Those component-specific files take precedence over this
 inventory if any wording differs.
 
 This inventory reflects the dependencies resolved for CDSI Beacon version
-0.2.21. Review and regenerate it whenever dependency versions or the
+0.2.24. Review and regenerate it whenever dependency versions or the
 publishing model change.

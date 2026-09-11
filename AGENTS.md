@@ -27,7 +27,7 @@ The repository is organized as follows:
 - `scripts`: macOS packaging and icon generation scripts.
 - `Resources` and `CDSI.Agent.Mac/Assets`: source and generated application icon assets.
 
-The supported application targets are macOS 12 or later on Apple Silicon and Intel Macs. Each packaged build targets one architecture; the repository does not currently produce a Universal Binary.
+The supported application target is macOS 12 or later on Apple Silicon (arm64). Intel Macs, x86_64 packages, and Universal Binaries are not supported.
 
 ## Architecture Rules
 
@@ -151,14 +151,14 @@ Add or update tests in proportion to risk. Changes to destructive operations, mi
 
 ## Packaging, Icons, and Release Verification
 
-- `make app` packages the current or selected architecture through `scripts/build-app.sh`.
-- The script produces a self-contained `.app` under `build/osx-arm64` or `build/osx-x64`.
+- `make app` packages the Apple Silicon target through `scripts/build-app.sh`; `BEACON_ARCH` accepts only `arm64`.
+- The script produces a self-contained `.app` under `build/osx-arm64`.
 - The current ad-hoc signature is for local development only. Public distribution requires a Developer ID identity, hardened runtime, appropriate entitlements, notarization, and staple verification.
 - `CDSI.Agent.Mac/Assets/logo.png` is the icon source. Generated sizes, `Assets.car`, and `Beacon.icns` must remain synchronized.
 - Regenerate icon assets only on a Mac with the required Apple tools by using `scripts/generate-icons.sh`.
 - Run `scripts/generate-icons.sh --check` after icon or generator changes.
 - Do not edit generated icon artifacts independently of their source and integrity manifest.
-- Validate the final app with `plutil`, architecture checks, signature verification, and a launch smoke test on the target architecture.
+- Validate the final app with `plutil`, architecture checks, signature verification, and a launch smoke test on a supported Apple Silicon Mac.
 
 ## Versioning
 
@@ -168,7 +168,7 @@ Add or update tests in proportion to risk. Changes to destructive operations, mi
 - Code or release commits increment the version exactly once.
 - Documentation-only changes do not require a version bump unless they intentionally describe a new release.
 - Release tags use `v<version>` and must match `VERSION`.
-- Do not publish a release until both supported architectures have been built and tested as required by that release.
+- Do not publish a release until the supported arm64 target has been built, tested, and exercised on a supported Apple Silicon Mac.
 
 ## Git and Change Discipline
 
@@ -192,4 +192,3 @@ A change is complete only when:
 - Documentation and legal notices reflect user-visible or dependency changes.
 - `VERSION` is updated only when the change requires a version increment.
 - Release-affecting changes have been packaged and smoke-tested on supported Mac hardware.
-
